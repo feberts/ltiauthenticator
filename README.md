@@ -1,3 +1,10 @@
+Modified the authenticator to use the local-part of the **mail address** as login name rather than the user ID. Alternatively, a combination of **first and last name** can be used. Note that the used parameter names may be deprecated in newer LTI versions. See `__init__.py` for details.
+
+This has been tested with **Moodle**.
+
+The original README:
+
+
 # LTI Launch JupyterHub Authenticator
 
 [![TravisCI build status](https://img.shields.io/travis/jupyterhub/ltiauthenticator/master?logo=travis)](https://travis-ci.org/jupyterhub/ltiauthenticator)
