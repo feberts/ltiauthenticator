@@ -149,25 +149,20 @@ class LTIAuthenticator(Authenticator):
                 handler.request.headers,
                 args
         ):
-            # Before we return lti_user_id, check to see if a canvas_custom_user_id was sent. 
-            # If so, this indicates two things:
-            # 1. The request was sent from Canvas, not edX
-            # 2. The request was sent from a Canvas course not running in anonymous mode
-            # If this is the case we want to use the canvas ID to allow grade returns through the Canvas API
-            # If Canvas is running in anonymous mode, we'll still want the 'user_id' (which is the `lti_user_id``)
 
-            canvas_id = handler.get_body_argument('custom_canvas_user_id', default=None)
+            # Use first part of email address as the login name:
+            user_name = handler.get_body_argument('lis_person_contact_email_primary')
+            user_name = user_name.split("@")[0] # delete '@...'
 
-            if canvas_id is not None:
-                user_id = handler.get_body_argument('custom_canvas_user_id')
-            else:
-                user_id = handler.get_body_argument('user_id')
+            # Alternatively, use a combination of first and last name as login name:
+            # user_name = handler.get_body_argument('lis_person_name_family') + "_" + handler.get_body_argument('lis_person_name_given')
+
+            # Attention: The above used parameter names may be deprecated in newer LTI versions. See 'https://www.imsglobal.org/specs/ltiv2p0/implementation-guide' (Appendix D – Deprecated Parameter Names).
 
             return {
-                'name': user_id,
+                'name': user_name,
                 'auth_state': {k: v for k, v in args.items() if not k.startswith('oauth_')}
             }
-
 
     def login_url(self, base_url):
         return url_path_join(base_url, '/lti/launch')
